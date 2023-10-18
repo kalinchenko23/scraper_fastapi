@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Query, Body, HTTPException, Depends, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-
+from scraper_service import retreive_message
+from sessions import client_max
 app = FastAPI()
 
 
@@ -13,6 +14,6 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-def status_check():
-    return {"message": f"It's working!"}
+@app.get("/retreive_message", status_code=200)
+async def status_check(channel: str , hours: int):
+    return await retreive_message(client_max, channel, hours)
