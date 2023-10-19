@@ -43,16 +43,15 @@ async def retreive_message(client,channel, hours):
     if not await client.is_user_authorized():
         await client.send_code_request("+17573582912")
         await client.sign_in("+17573582912", input('Enter the code: '))
-    else:
-        print("yooooooo")
-
 
     time = datetime.datetime.now() - datetime.timedelta(hours=hours)
     retrieved_messages = await client.get_messages(channel, limit=None, offset_date=time, reverse=True)
     filtered = []
     for m in retrieved_messages:
-        if m.message != "":
+        if m.message != "" and m.message != None:
             lang = detect(m.message)
+
+
 
             #translating message
             if lang != "en":
@@ -63,4 +62,4 @@ async def retreive_message(client,channel, hours):
                     pass
             else:
                 filtered.append([m])
-    return filtered
+    return print(filtered)
