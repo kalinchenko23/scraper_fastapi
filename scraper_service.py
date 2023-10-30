@@ -3,8 +3,7 @@ from deep_translator import GoogleTranslator
 from langdetect import detect
 import datetime
 import re
-from sessions import client_max
-async def retreive_message_keyword(client,channel, keywords, hours):
+async def retrieve_message_keyword(client,channel, keywords, hours):
     time=datetime.datetime.now() - datetime.timedelta(hours=hours)
     results = await client.get_messages(channel, limit=None, offset_date= time, reverse=True)
     filtered=[]
@@ -38,8 +37,8 @@ async def retreive_message_keyword(client,channel, keywords, hours):
     return filtered
 
 
-async def retreive_message(client,channel, hours):
-    await client_max.connect()
+async def retrieve_message(client,channel, hours):
+    await client.connect()
     if not await client.is_user_authorized():
         await client.send_code_request("+17573582912")
         await client.sign_in("+17573582912", input('Enter the code: '))
@@ -50,16 +49,26 @@ async def retreive_message(client,channel, hours):
     for m in retrieved_messages:
         if m.message != "" and m.message != None:
             lang = detect(m.message)
-
-
-
             #translating message
             if lang != "en":
                 try:
                     translated_message = GoogleTranslator(source='auto', target='en').translate(m.message)
-                    filtered.append([m, translated_message])
+                    filtered.append([m.message, translated_message])
                 except RequestError as request_e:
                     pass
             else:
-                filtered.append([m])
-    return print(filtered)
+                filtered.append([m.message])
+    return filtered
+
+async def retrieve_comments(client, channel, message_id):
+    await client.connect()
+    if not await client.is_user_authorized():
+        await client.send_code_request("+17573582912")
+        await client.sign_in("+17573582912", input('Enter the code: '))
+
+    comments= await client.get_messages(channel, limit=None, reply_to= message_id)
+    results=[]
+    for comment in comments:
+        results.append((comment.message, comment.date))
+    return results
+
