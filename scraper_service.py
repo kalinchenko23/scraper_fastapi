@@ -3,6 +3,7 @@ from deep_translator import GoogleTranslator
 from langdetect import detect
 import datetime
 import re
+import json
 async def retrieve_message_keyword(client,channel, keywords, hours):
     time=datetime.datetime.now() - datetime.timedelta(hours=hours)
     results = await client.get_messages(channel, limit=None, offset_date= time, reverse=True)
@@ -65,10 +66,17 @@ async def retrieve_comments(client, channel, message_id):
     if not await client.is_user_authorized():
         await client.send_code_request("+17573582912")
         await client.sign_in("+17573582912", input('Enter the code: '))
-
-    comments= await client.get_messages(channel, limit=None, reply_to= message_id)
-    results=[]
+    try:
+        comments= await client.get_messages(channel, limit=None, reply_to= message_id)
+        results=[]
+    except Exception as e:
+        json_data = json.dumps({"error":f"{e}"},ensure_ascii=False)
+        return json_data
     for comment in comments:
-        results.append((comment.message, comment.date))
-    return results
-
+        results.append((comment.message, comment.date.strftime("%Y-%m-%d %H:%M")))
+    if results == []:
+        json_data = json.dumps({"data":f"no comments for post with ID {message_id}"},ensure_ascii=False)
+        return  json_data
+    else:
+        json_data = json.dumps({"comments": results},ensure_ascii=False)
+        return json_data
