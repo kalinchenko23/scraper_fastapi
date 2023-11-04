@@ -1,6 +1,7 @@
 from deep_translator.exceptions import  RequestError
 from deep_translator import GoogleTranslator
 from langdetect import detect
+from sessions import phone_number
 import datetime
 import re
 import json
@@ -41,8 +42,8 @@ async def retrieve_message_keyword(client,channel, keywords, hours):
 async def retrieve_message(client,channel, hours):
     await client.connect()
     if not await client.is_user_authorized():
-        await client.send_code_request("+17573582912")
-        await client.sign_in("+17573582912", input('Enter the code: '))
+        await client.send_code_request(phone_number)
+        await client.sign_in(phone_number, input('Enter the code: '))
 
     time = datetime.datetime.now() - datetime.timedelta(hours=hours)
     retrieved_messages = await client.get_messages(channel, limit=None, offset_date=time, reverse=True)
@@ -64,8 +65,8 @@ async def retrieve_message(client,channel, hours):
 async def retrieve_comments(client, channel, message_id):
     await client.connect()
     if not await client.is_user_authorized():
-        await client.send_code_request("+17573582912")
-        await client.sign_in("+17573582912", input('Enter the code: '))
+        await client.send_code_request(phone_number)
+        await client.sign_in(phone_number, input('Enter the code: '))
     try:
         comments= await client.get_messages(channel, limit=None, reply_to= message_id)
         results=[]
