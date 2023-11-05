@@ -64,7 +64,7 @@ async def retrieve_message(client,channel, hours):
 
 async def retrieve_comments(client, channel, message_id):
     await client.connect()
-    if not await client.is_user_authorized():ls
+    if not await client.is_user_authorized():
         await client.send_code_request(phone_number)
         await client.sign_in(phone_number, input('Enter the code: '))
     try:
