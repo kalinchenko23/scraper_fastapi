@@ -62,7 +62,7 @@ async def retrieve_message(client,channel, hours):
                 filtered.append([m.message])
     return filtered
 
-async def retrieve_comments(client, channel, message_id):
+async def retrieve_comments(client, channel, message_id,translate):
     await client.connect()
     if not await client.is_user_authorized():
         await client.send_code_request(phone_number)
@@ -73,11 +73,20 @@ async def retrieve_comments(client, channel, message_id):
     except Exception as e:
         json_data = json.dumps({"error":f"{e}"},ensure_ascii=False)
         return json_data
-    for comment in comments:
-        results.append((comment.message, comment.date.strftime("%Y-%m-%d %H:%M")))
+    if translate:
+        for comment in comments:
+            print(0)
+            translated_comment = GoogleTranslator(source='auto', target='en').translate(comment.message)
+            results.append((comment.message,translated_comment,comment.date.strftime("%Y-%m-%d %H:%M")))
+    else:
+        for comment in comments:
+            print(1)
+            results.append((comment.message,comment.date.strftime("%Y-%m-%d %H:%M")))
+
     if results == []:
         json_data = json.dumps({"data":f"no comments for post with ID {message_id}"},ensure_ascii=False)
         return  json_data
     else:
         json_data = json.dumps({"comments": results},ensure_ascii=False)
         return json_data
+

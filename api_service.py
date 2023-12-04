@@ -19,5 +19,5 @@ async def status_check(channel: str = Body(), hours: int = Body()):
     return await retrieve_message(client_max, channel, hours)
 
 @app.post("/retrieve_comments", status_code=200)
-async def status_check(channel: str = Body(), message_id: int = Body()):
-    return await retrieve_comments(client_max, channel, message_id)
+async def status_check(channel: str = Body(), message_id: int = Body(), translate: bool = Body(default=False)):
+    return await retrieve_comments(client_max, channel, message_id, translate)
