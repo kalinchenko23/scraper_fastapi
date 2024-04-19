@@ -1,5 +1,5 @@
 
-Obtaining API credantial:
+Obtaining API credentials:
 
   Login to your Telegram account with the phone number of the developer account to use.
   Click under API Development tools.
