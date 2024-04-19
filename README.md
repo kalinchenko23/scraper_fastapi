@@ -1,5 +1,6 @@
 
 Obtaining API credantial:
+
   Login to your Telegram account with the phone number of the developer account to use.
   Click under API Development tools.
   A Create new application window will appear. Fill in your application details. There is no need to enter any URL, and only the first two fields (App title and Short name) can currently be changed later.
