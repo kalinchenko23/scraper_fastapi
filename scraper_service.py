@@ -75,12 +75,10 @@ async def retrieve_comments(client, channel, message_id,translate):
         return json_data
     if translate:
         for comment in comments:
-            print(0)
             translated_comment = GoogleTranslator(source='auto', target='en').translate(comment.message)
             results.append((comment.message,translated_comment,comment.date.strftime("%Y-%m-%d %H:%M")))
     else:
         for comment in comments:
-            print(1)
             results.append((comment.message,comment.date.strftime("%Y-%m-%d %H:%M")))
 
     if results == []:
