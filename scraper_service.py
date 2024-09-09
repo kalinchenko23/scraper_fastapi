@@ -39,11 +39,14 @@ async def retrieve_message_keyword(client,channel, keywords, hours):
     return filtered
 
 
-async def retrieve_message(client,channel, hours):
+async def retrieve_message(client,channel, hours, code):
     await client.connect()
-    if not await client.is_user_authorized():
-        await client.send_code_request(os.environ.get('PHONE'))
-        await client.sign_in(os.environ.get('PHONE'), input('Enter the code: '))
+    if not await client.is_user_authorized() and code == None:
+        await client.sign_in(os.environ.get('PHONE'))
+        json_data = json.dumps({"data": "Code has been sent to the number on file, please provide an authentication code with your next request."},ensure_ascii=False)
+        return json_data
+    elif not await client.is_user_authorized() and code != None:
+        await client.sign_in(os.environ.get('PHONE'), code=code)
 
     time = datetime.datetime.now() - datetime.timedelta(hours=hours)
     retrieved_messages = await client.get_messages(channel, limit=None, offset_date=time, reverse=True)
@@ -62,11 +65,16 @@ async def retrieve_message(client,channel, hours):
                 filtered.append([m.message])
     return filtered
 
-async def retrieve_comments(client, channel, message_id,translate):
+
+async def retrieve_comments(client, channel, message_id,translate,code):
     await client.connect()
-    if not await client.is_user_authorized():
-        await client.send_code_request(os.environ.get('PHONE'))
-        await client.sign_in(os.environ.get('PHONE'), input('Enter the code: '))
+    if not await client.is_user_authorized() and code == None:
+        await client.sign_in(os.environ.get('PHONE'))
+        json_data = json.dumps({"data": "Code has been sent to the number on file, please provide an authentication code with your next request."}, ensure_ascii=False)
+        return json_data
+    elif not await client.is_user_authorized() and code != None:
+        await client.sign_in(os.environ.get('PHONE'), code=code)
+
     try:
         comments= await client.get_messages(channel, limit=None, reply_to= message_id)
         results=[]
